@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 3.9%; /* #0A0A0A Black */
+    --foreground: 0 0% 70.2%; /* #B3B3B3 Light Gray */
+    --card: 0 0% 9%; /* #171717 Dark Gray */
+    --card-foreground: 0 0% 70.2%; /* #B3B3B3 Light Gray */
+    --popover: 0 0% 9%; /* #171717 Dark Gray */
+    --popover-foreground: 0 0% 70.2%; /* #B3B3B3 Light Gray */
+    --primary: 225 69.1% 40.2%; /* #1E40AF Blue Watched */
+    --primary-foreground: 0 0% 83.1%; /* #D4D4D4 White Accents */
+    --secondary: 215 13.9% 34.1%; /* #4B5563 Gray Plan to Watch */
+    --secondary-foreground: 0 0% 83.1%; /* #D4D4D4 White Accents */
+    --muted: 0 0% 9%; /* #171717 Dark Gray */
+    --muted-foreground: 215 13.9% 34.1%; /* #4B5563 Gray Plan to Watch */
+    --accent: 215 13.9% 34.1%; /* #4B5563 Gray Plan to Watch */
+    --accent-foreground: 0 0% 83.1%; /* #D4D4D4 White Accents */
+    --destructive: 0 73.5% 41.4%; /* #B91C1C Red Dropped */
+    --destructive-foreground: 0 0% 83.1%; /* #D4D4D4 White Accents */
+    --border: 215 13.9% 34.1%; /* #4B5563 Gray Plan to Watch */
+    --input: 215 13.9% 34.1%; /* #4B5563 Gray Plan to Watch */
+    --ring: 225 69.1% 40.2%; /* #1E40AF Blue Watched */
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --radius: 0.5rem;
+    
+    color: hsl(var(--foreground));
+    background-color: hsl(var(--background));
+
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color-scheme: dark;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    margin: 0;
+    min-height: 100vh;
+  }
+}
