@@ -1,13 +1,8 @@
 import { Router, Request, Response, RequestHandler } from 'express';
 import { query } from '../config/db';
+import { sanitizeUsernameForTableName } from '../utils/utils';
 
 const router = Router();
-
-const sanitizeUsernameForTableName = (username: string): string => {
-  // Replace non-alphanumeric characters with underscores
-  // Convert to lowercase to ensure case-insensitivity for table names if the DB is case-sensitive
-  return username.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase();
-};
 
 // Define a type for the request body if you expect specific properties
 interface UserRequestBody {
@@ -42,29 +37,48 @@ const handlePostUser: RequestHandler<Record<string, never>, any, UserRequestBody
       // For now, just confirm existence. Later, might fetch user data/preferences.
       res.status(200).json({ message: `User '${username}' already exists. Welcome back!`, tableName });
     } else {
-      // Create the user-specific table
-      // PRD: "title, status, rating, season, type, and other relevant metadata"
+      // Create the user-specific table with a more detailed schema
       const createUserTableQuery = `
-        CREATE TABLE ${tableName} (
-          id SERIAL PRIMARY KEY,
+        CREATE TABLE IF NOT EXISTS ${tableName} (
+          item_id SERIAL PRIMARY KEY,
+          tmdb_id INTEGER NOT NULL,
+          media_type VARCHAR(10) NOT NULL, -- 'movie' or 'tv'
           title VARCHAR(255) NOT NULL,
-          type VARCHAR(50) NOT NULL, -- e.g., 'movie', 'series'
-          status VARCHAR(50) NOT NULL, -- e.g., 'Watching', 'Completed', 'On Hold', 'Dropped', 'Plan to Watch'
-          rating SMALLINT, -- 1-10
-          current_season SMALLINT, -- For series
-          current_episode SMALLINT, -- For series
-          total_episodes SMALLINT, -- For series
+          poster_path VARCHAR(255),
           release_date DATE,
-          cover_image_url TEXT,
+          user_list_type VARCHAR(50) NOT NULL, -- 'Watching', 'Completed', 'On Hold', 'Dropped', 'Plan to Watch'
+          rating SMALLINT CHECK (rating >= 1 AND rating <= 10), -- 1-10
+          current_season SMALLINT,
+          current_episode SMALLINT,
+          date_added TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+          date_updated TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
           notes TEXT,
-          added_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-          -- Potentially more fields: director, genres (could be a separate table or array), user_specific_tags
+          CONSTRAINT unique_tmdb_entry_per_user UNIQUE (tmdb_id, media_type)
         );
       `;
       await query(createUserTableQuery);
+
+      // Function to update 'date_updated' column
+      const createUpdateTimestampFunctionQuery = `
+        CREATE OR REPLACE FUNCTION update_timestamp_column()
+        RETURNS TRIGGER AS $$
+        BEGIN
+           NEW.date_updated = NOW(); 
+           RETURN NEW;
+        END;
+        $$ language 'plpgsql';
+      `;
+      await query(createUpdateTimestampFunctionQuery);
       
-      // TODO: Add a trigger to update updated_at on row update for this table
+      // Trigger to update 'date_updated' on row update
+      const createTriggerQuery = `
+        DROP TRIGGER IF EXISTS update_${tableName}_timestamp ON ${tableName};
+        CREATE TRIGGER update_${tableName}_timestamp
+        BEFORE UPDATE ON ${tableName}
+        FOR EACH ROW
+        EXECUTE FUNCTION update_timestamp_column();
+      `;
+      await query(createTriggerQuery);
 
       res.status(201).json({ message: `User '${username}' created successfully. Welcome!`, tableName });
     }

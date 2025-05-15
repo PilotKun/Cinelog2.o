@@ -34,3 +34,8 @@
 **Change**: Addressed Navbar visibility by making it fixed. Created a new `HomePage.tsx` with navigation buttons (Search, Lists, Profile). Updated `App.tsx` to route to `/home` after login and for the Navbar brand link. Ensured `LandingPage.tsx` correctly redirects to `/home` via context update and `App.tsx` routing.
 **File(s) Affected**: `client/src/components/Navbar.tsx`, `client/src/pages/HomePage.tsx`, `client/src/App.tsx`, `logs.md`.
 **Reason**: To improve user experience by providing a clear Home page after login and ensuring the Navbar is always visible and functional, as per user feedback. 
+
+### [15-05-25, 12:27]
+**Change**: Implemented backend for list management. Updated user table schema in `userRoutes.ts` to include detailed fields for list items (tmdb_id, media_type, title, poster_path, status, rating, etc.), a unique constraint, and an auto-updating `date_updated` timestamp. Created new `listRoutes.ts` with CRUD API endpoints (POST, GET, PUT, DELETE) for managing items in a user's list. Moved `sanitizeUsernameForTableName` to `utils/utils.ts`. Integrated list routes into `server/src/index.ts`.
+**File(s) Affected**: `server/src/routes/userRoutes.ts`, `server/src/routes/listRoutes.ts`, `server/src/utils/utils.ts`, `server/src/index.ts`, `logs.md`.
+**Reason**: To establish the core database structure and API functionality for managing user-specific lists and list items, addressing high-priority PRD items for Database Schema, API Routes, and List Types. 
