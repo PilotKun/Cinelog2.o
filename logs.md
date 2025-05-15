@@ -23,4 +23,14 @@
 ### [14-05-25, 21:33]
 **Change**: Set up TMDB API integration: created backend route for TMDB search proxy. Created basic SearchPage component with search functionality and results display. Added SearchPage route to App.tsx.
 **File(s) Affected**: `.cursor/PRD.md`, `server/package.json`, `server/package-lock.json`, `server/src/routes/tmdbRoutes.ts`, `server/src/index.ts`, `client/src/pages/SearchPage.tsx`, `client/src/App.tsx`, `logs.md`.
-**Reason**: To implement the high-priority Search Page feature, enabling users to find movies/series using the TMDB API. 
+**Reason**: To implement the high-priority Search Page feature, enabling users to find movies/series using the TMDB API.
+
+### [15-05-25, 11:53] 
+**Change**: Implemented Navbar component. Includes links to Search, Lists, and Profile pages, username display, and logout functionality. Created placeholder ProfilePage. Integrated Navbar into App.tsx to display on all authenticated pages.
+**File(s) Affected**: `client/src/components/Navbar.tsx`, `client/src/App.tsx`, `client/src/pages/ProfilePage.tsx`, `logs.md`.
+**Reason**: To fulfill the high-priority Navbar feature from the PRD, providing essential navigation for the application. 
+
+### [15-05-25, 11:57] 
+**Change**: Addressed Navbar visibility by making it fixed. Created a new `HomePage.tsx` with navigation buttons (Search, Lists, Profile). Updated `App.tsx` to route to `/home` after login and for the Navbar brand link. Ensured `LandingPage.tsx` correctly redirects to `/home` via context update and `App.tsx` routing.
+**File(s) Affected**: `client/src/components/Navbar.tsx`, `client/src/pages/HomePage.tsx`, `client/src/App.tsx`, `logs.md`.
+**Reason**: To improve user experience by providing a clear Home page after login and ensuring the Navbar is always visible and functional, as per user feedback. 
